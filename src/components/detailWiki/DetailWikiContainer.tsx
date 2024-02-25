@@ -9,7 +9,7 @@ const DetailWikiContainer = () => {
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center">
       <div className="w-[40rem] h-[40rem] bg-white px-14">
-        {isFetching ? (
+        {isFetching || !data ? (
           <Loading />
         ) : (
           <>
