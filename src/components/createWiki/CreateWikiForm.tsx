@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAxios from "../../hooks/useAxios";
+import useCreateWiki from "../../hooks/mutations/useCreateWiki";
 import { checkFormValue } from "../../utils/checkHasEmptyValue";
 
 interface IFormValue {
@@ -14,7 +14,6 @@ const CreateWikiForm = () => {
     content: "",
   });
   const navigate = useNavigate();
-  const { axiosData } = useAxios();
 
   const handleChangeFormValue = (
     type: string,
@@ -23,6 +22,7 @@ const CreateWikiForm = () => {
     const value = e.target.value;
     setFormValue((prev) => ({ ...prev, [type]: value }));
   };
+  const { mutate } = useCreateWiki(formValue);
 
   const submitFormValue = async (e: FormEvent) => {
     e.preventDefault();
@@ -30,27 +30,7 @@ const CreateWikiForm = () => {
     const result = confirm("등록을 하시겠습니까?");
 
     if (!result) return;
-
-    const response = await axiosData({
-      method: "POST",
-      url: "/wikiList",
-      data: {
-        title: formValue.title,
-        content: formValue.content,
-      },
-    });
-
-    if (response) {
-      const status = response.status;
-      const data = response.data;
-
-      if (status === 201) {
-        alert("등록이 완료되었습니다.");
-        navigate(`/detailWiki/${data.id}`);
-      } else {
-        alert("등록에 실패하였습니다. 잠시 후에 다시 시도해주세요.");
-      }
-    }
+    mutate();
   };
 
   const handleCancelCreateWiki = () => {

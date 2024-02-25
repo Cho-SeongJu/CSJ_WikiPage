@@ -1,8 +1,8 @@
-import { useNavigate, useParams } from "react-router-dom";
-import useAxios from "../../hooks/useAxios";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { IFormValue } from "../../interface/wikiForm";
+import { useNavigate } from "react-router-dom";
+import useUpdateWiki from "../../hooks/mutations/useUpdateWiki";
 import { IWiki } from "../../interface/wiki";
+import { IFormValue } from "../../interface/wikiForm";
 import { checkFormValue } from "../../utils/checkHasEmptyValue";
 
 interface IEditWikiForm {
@@ -10,10 +10,10 @@ interface IEditWikiForm {
 }
 
 const EditWikiForm = ({ wikiInfo }: IEditWikiForm) => {
-  const { wikiId } = useParams();
   const [formValue, setFormValue] = useState<IFormValue>(wikiInfo);
   const navigate = useNavigate();
-  const { axiosData } = useAxios();
+
+  const { mutate } = useUpdateWiki(formValue);
 
   const handleChangeFormValue = (
     type: string,
@@ -30,25 +30,7 @@ const EditWikiForm = ({ wikiInfo }: IEditWikiForm) => {
 
     if (!result) return;
 
-    const response = await axiosData({
-      method: "PUT",
-      url: `/wikiList/${wikiId}`,
-      data: {
-        title: formValue.title,
-        content: formValue.content,
-      },
-    });
-
-    if (response) {
-      const status = response.status;
-
-      if (status === 200) {
-        alert("수정이 완료되었습니다.");
-        navigate(`/detailWiki/${wikiId}`);
-      } else {
-        alert("등록에 실패하였습니다. 잠시 후에 다시 시도해주세요.");
-      }
-    }
+    mutate();
   };
 
   const handleCancelCreateWiki = () => {
