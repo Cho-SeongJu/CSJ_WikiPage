@@ -8,14 +8,14 @@ import WikiTitle from "./WikiTitle";
 
 const MainContainer = () => {
   const [page, setPage] = useState<number>(1);
-  const { data, isLoading } = useWikiList(page);
+  const { data, isFetching } = useWikiList(page);
 
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen">
       <div className="w-96">
         <CreateWikiButton />
         <WikiTitle />
-        {isLoading || !data ? (
+        {isFetching || !data ? (
           <Loading />
         ) : (
           <>

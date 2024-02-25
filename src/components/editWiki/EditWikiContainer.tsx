@@ -3,11 +3,11 @@ import Loading from "../common/Loading";
 import EditWikiForm from "./EditWikiForm";
 
 const EditWikiContainer = () => {
-  const { data, isLoading } = useWikiDetail();
+  const { data, isFetching } = useWikiDetail();
 
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center">
-      {isLoading ? <Loading /> : <EditWikiForm wikiInfo={data} />}
+      {isFetching || !data ? <Loading /> : <EditWikiForm wikiInfo={data} />}
     </div>
   );
 };
